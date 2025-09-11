@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package mcabank.user;
+import "google/protobuf/timestamp.proto";
+
+option go_package = "proto/user";
+
+// =======================
+// Auth Service
+// =======================
+service AuthService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  rpc VerifySession(VerifySessionRequest) returns (VerifySessionResponse) {}
+}
+
+// =======================
+// User messages
+// =======================
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message GetUserResponse {
+  int32 id = 1;
+  string email = 2;
+  string document = 3;
+}
+
+message GetUserByDocumentRequest {
+  string document = 1;
+}
+
+message GetUserByDocumentResponse {
+  int32 id = 1;
+  string email = 2;
+  string document = 3;
+}
+
+// =======================
+// Auth messages
+// =======================
+message VerifySessionRequest {
+  string token = 1;
+}
+
+message VerifySessionResponse {
+  uint64 user_id = 1;
+  google.protobuf.Timestamp expires_at = 2;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  uint64 user_id = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string document = 3;
+}
+
+message RegisterResponse {
+  int32 id = 1;
+  string email = 2;
+  string document = 3;
+}
