@@ -47,6 +47,36 @@ func (r *customerRepository) Create(ctx context.Context, customer *domain.Custom
 	return mappers.ToDomain(m), nil
 }
 
+func (r *customerRepository) CreateWithCallback(
+	ctx context.Context,
+	customer *domain.Customer,
+	fn func(*domain.Customer) error,
+) (*domain.Customer, error) {
+	var created *domain.Customer
+
+	err := r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		m := mappers.FromDomain(customer)
+
+		if err := tx.Create(m).Error; err != nil {
+			return err
+		}
+
+		created = mappers.ToDomain(m)
+
+		if err := fn(created); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return created, nil
+}
+
 func (r *customerRepository) Update(ctx context.Context, customer *domain.Customer) (*domain.Customer, error) {
 	if err := r.db.WithContext(ctx).
 		Model(&models.Customer{}).

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	pbAuthClient "github.com/rasteiro11/MCABankCustomer/gen/proto/go"
+	pbAuthClient "github.com/rasteiro11/MCABankCustomer/gen/proto/go/user"
 	"github.com/rasteiro11/MCABankCustomer/src/customer/domain"
 	"github.com/rasteiro11/PogCore/pkg/transport/rest"
 )
