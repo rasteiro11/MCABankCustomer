@@ -72,7 +72,7 @@ func (h *handler) FindByID(c *fiber.Ctx) error {
 }
 
 func (h *handler) Create(c *fiber.Ctx) error {
-	req := &CreateCustomerRequest{}
+	req := &createCustomerRequest{}
 
 	if err := c.BodyParser(req); err != nil {
 		return rest.NewStatusBadRequest(c, err)
@@ -96,7 +96,7 @@ func (h *handler) Update(c *fiber.Ctx) error {
 		return rest.NewStatusBadRequest(c, err)
 	}
 
-	req := &UpdateCustomerRequest{}
+	req := &updateCustomerRequest{}
 	if err := c.BodyParser(req); err != nil {
 		return rest.NewStatusBadRequest(c, err)
 	}
