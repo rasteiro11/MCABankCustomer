@@ -49,20 +49,7 @@ var (
 	ErrTypeAssertion = errors.New("type assertion error")
 )
 
-func getUserInfo(c *fiber.Ctx) (*domain.Claims, error) {
-	userInfo, ok := c.Context().UserValue("user").(*domain.Claims)
-	if !ok {
-		return nil, ErrTypeAssertion
-	}
-
-	return userInfo, nil
-}
-
 func (h *handler) FindAll(c *fiber.Ctx) error {
-	if _, err := getUserInfo(c); err != nil {
-		return rest.NewStatusUnauthorized(c, err)
-	}
-
 	customers, err := h.customerService.GetAll(c.Context())
 	if err != nil {
 		return rest.NewStatusInternalServerError(c, err)
@@ -71,10 +58,6 @@ func (h *handler) FindAll(c *fiber.Ctx) error {
 }
 
 func (h *handler) FindByID(c *fiber.Ctx) error {
-	if _, err := getUserInfo(c); err != nil {
-		return rest.NewStatusUnauthorized(c, err)
-	}
-
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return rest.NewStatusBadRequest(c, err)
@@ -89,10 +72,6 @@ func (h *handler) FindByID(c *fiber.Ctx) error {
 }
 
 func (h *handler) Create(c *fiber.Ctx) error {
-	if _, err := getUserInfo(c); err != nil {
-		return rest.NewStatusUnauthorized(c, err)
-	}
-
 	req := &CreateCustomerRequest{}
 
 	if err := c.BodyParser(req); err != nil {
@@ -112,10 +91,6 @@ func (h *handler) Create(c *fiber.Ctx) error {
 }
 
 func (h *handler) Update(c *fiber.Ctx) error {
-	if _, err := getUserInfo(c); err != nil {
-		return rest.NewStatusUnauthorized(c, err)
-	}
-
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return rest.NewStatusBadRequest(c, err)
@@ -143,10 +118,6 @@ func (h *handler) Update(c *fiber.Ctx) error {
 }
 
 func (h *handler) Delete(c *fiber.Ctx) error {
-	if _, err := getUserInfo(c); err != nil {
-		return rest.NewStatusUnauthorized(c, err)
-	}
-
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return rest.NewStatusBadRequest(c, err)

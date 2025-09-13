@@ -6,9 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/rasteiro11/MCABankCustomer/entities"
 	pbPaymentClient "github.com/rasteiro11/MCABankCustomer/gen/proto/go/payment"
-	pbAuthClient "github.com/rasteiro11/MCABankCustomer/gen/proto/go/user"
 	"github.com/rasteiro11/MCABankCustomer/src/customer/delivery/http"
-	"github.com/rasteiro11/MCABankCustomer/src/customer/delivery/http/middleware"
 	customerRepo "github.com/rasteiro11/MCABankCustomer/src/customer/repository"
 	customerService "github.com/rasteiro11/MCABankCustomer/src/customer/service"
 	"github.com/rasteiro11/PogCore/pkg/config"
@@ -36,14 +34,6 @@ func main() {
 	customerRepo := customerRepo.NewCustomerRepository(db)
 
 	credentials := insecure.NewCredentials()
-	authConn, err := grpc.Dial(config.Instance().RequiredString("AUTH_GRPC_SERVICE"),
-		grpc.WithTransportCredentials(credentials))
-	if err != nil {
-		logger.Of(ctx).Fatalf(
-			"[main] grpc.Dial returned error: err=%+v", err)
-	}
-
-	authClient := pbAuthClient.NewAuthServiceClient(authConn)
 
 	paymentConn, err := grpc.Dial(config.Instance().RequiredString("PAYMENT_GRPC_SERVICE"),
 		grpc.WithTransportCredentials(credentials))
@@ -55,7 +45,6 @@ func main() {
 	paymentClient := pbPaymentClient.NewBalanceServiceClient(paymentConn)
 
 	app := server.NewServer()
-	app.Use("/customers", middleware.ValidateUserMiddleware(authClient))
 	app.Use("/*", cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowHeaders: "*",
