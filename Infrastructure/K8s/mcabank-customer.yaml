@@ -24,7 +24,7 @@ spec:
             - name: DATABASE_USER
               value: "root"
             - name: DATABASE_PASSWORD
-              value: "root"
+              value: "password"
             - name: DATABASE_ADDR
               value: "mysql.default.svc.cluster.local:3306"
             - name: DATABASE
