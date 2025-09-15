@@ -47,25 +47,11 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 5002
-          env:
-            - name: DATABASE_USER
-              value: "root"
-            - name: DATABASE_PASSWORD
-              value: "password"
-            - name: DATABASE_ADDR
-              value: "mysql.default.svc.cluster.local:3306"
-            - name: DATABASE
-              value: "mcabank-db"
-            - name: JWT_SECRET
-              value: "mcabank-secret"
-            - name: SERVICE_PORT
-              value: "50052"
-            - name: SERVER_PORT
-              value: ":5002"
-            - name: AUTH_GRPC_SERVICE
-              value: "mcabank-auth-grpc.default.svc.cluster.local:50051"
-            - name: PAYMENT_GRPC_SERVICE
-              value: "mcabank-payment-grpc.default.svc.cluster.local:50053"
+          envFrom:
+            - configMapRef:
+                name: mcabank-customer-config
+            - secretRef:
+                name: mcabank-customer-secret
 ---
 apiVersion: v1
 kind: Service
