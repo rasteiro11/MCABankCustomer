@@ -1,3 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcabank-customer-config
+  labels:
+    app: mcabank-customer
+data:
+  DATABASE_USER: "root"
+  DATABASE_ADDR: "mysql.default.svc.cluster.local:3306"
+  DATABASE: "mcabank-db"
+  SERVICE_PORT: "50052"
+  SERVER_PORT: ":5002"
+  AUTH_GRPC_SERVICE: "mcabank-auth-grpc.default.svc.cluster.local:50051"
+  PAYMENT_GRPC_SERVICE: "mcabank-payment-grpc.default.svc.cluster.local:50053"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mcabank-customer-secret
+  labels:
+    app: mcabank-customer
+type: Opaque
+stringData:
+  DATABASE_PASSWORD: "password"
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
