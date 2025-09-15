@@ -49,6 +49,14 @@ var (
 	ErrTypeAssertion = errors.New("type assertion error")
 )
 
+// FindAll godoc
+// @Summary Get all customers
+// @Description Retrieve a list of all customers
+// @Tags customers
+// @Produce json
+// @Success 200 {array} customerResponse
+// @Failure 500 {object} any
+// @Router /customers [get]
 func (h *handler) FindAll(c *fiber.Ctx) error {
 	customers, err := h.customerService.GetAll(c.Context())
 	if err != nil {
@@ -57,6 +65,16 @@ func (h *handler) FindAll(c *fiber.Ctx) error {
 	return rest.NewStatusOk(c, rest.WithBody(MapCustomersToHTTP(customers)))
 }
 
+// FindByID godoc
+// @Summary Get a customer by ID
+// @Description Retrieve a single customer by its ID
+// @Tags customers
+// @Produce json
+// @Param id path int true "Customer ID"
+// @Success 200 {object} customerResponse
+// @Failure 400 {object} any
+// @Failure 404 {object} any
+// @Router /customers/{id} [get]
 func (h *handler) FindByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -71,6 +89,17 @@ func (h *handler) FindByID(c *fiber.Ctx) error {
 	return rest.NewStatusOk(c, rest.WithBody(MapCustomerToHTTP(customer)))
 }
 
+// Create godoc
+// @Summary Create a new customer
+// @Description Create a customer with a name and email
+// @Tags customers
+// @Accept json
+// @Produce json
+// @Param request body createCustomerRequest true "Customer info"
+// @Success 201 {object} customerResponse
+// @Failure 400 {object} any
+// @Failure 422 {object} any
+// @Router /customers [post]
 func (h *handler) Create(c *fiber.Ctx) error {
 	req := &createCustomerRequest{}
 
@@ -90,6 +119,18 @@ func (h *handler) Create(c *fiber.Ctx) error {
 	return rest.NewStatusCreated(c, rest.WithBody(MapCustomerToHTTP(customer)))
 }
 
+// Update godoc
+// @Summary Update an existing customer
+// @Description Update a customer's name and email by ID
+// @Tags customers
+// @Accept json
+// @Produce json
+// @Param id path int true "Customer ID"
+// @Param request body updateCustomerRequest true "Updated customer info"
+// @Success 200 {object} customerResponse
+// @Failure 400 {object} any
+// @Failure 422 {object} any
+// @Router /customers/{id} [put]
 func (h *handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -117,6 +158,15 @@ func (h *handler) Update(c *fiber.Ctx) error {
 	return rest.NewStatusOk(c, rest.WithBody(MapCustomerToHTTP(customer)))
 }
 
+// Delete godoc
+// @Summary Delete a customer
+// @Description Delete a customer by ID
+// @Tags customers
+// @Param id path int true "Customer ID"
+// @Success 200 {string} string "Customer deleted successfully"
+// @Failure 400 {object} any
+// @Failure 422 {object} any
+// @Router /customers/{id} [delete]
 func (h *handler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {

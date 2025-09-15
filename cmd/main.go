@@ -1,20 +1,30 @@
+// @title MCA Bank Customer API
+// @version 1.0
+// @description Service to manage MCA Bank customers (CRUD operations).
+// @host localhost:5002
+// @BasePath /
+// @schemes http
 package main
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/rasteiro11/MCABankCustomer/entities"
 	pbPaymentClient "github.com/rasteiro11/MCABankCustomer/gen/proto/go/payment"
-	"github.com/rasteiro11/MCABankCustomer/src/customer/delivery/http"
+	customerHttp "github.com/rasteiro11/MCABankCustomer/src/customer/delivery/http"
 	customerRepo "github.com/rasteiro11/MCABankCustomer/src/customer/repository"
 	customerService "github.com/rasteiro11/MCABankCustomer/src/customer/service"
 	"github.com/rasteiro11/PogCore/pkg/config"
 	"github.com/rasteiro11/PogCore/pkg/database"
 	"github.com/rasteiro11/PogCore/pkg/logger"
 	"github.com/rasteiro11/PogCore/pkg/server"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	_ "github.com/rasteiro11/MCABankCustomer/docs"
 )
 
 func main() {
@@ -45,6 +55,7 @@ func main() {
 	paymentClient := pbPaymentClient.NewBalanceServiceClient(paymentConn)
 
 	app := server.NewServer()
+	app.AddHandler("/swagger/*", "", http.MethodGet, fiberSwagger.WrapHandler)
 	app.Use("/*", cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowHeaders: "*",
@@ -52,7 +63,7 @@ func main() {
 
 	customerSvc := customerService.NewCustomerService(customerRepo, paymentClient)
 
-	http.NewHandler(app, http.WithCustomerService(customerSvc))
+	customerHttp.NewHandler(app, customerHttp.WithCustomerService(customerSvc))
 
 	app.PrintRouter()
 
