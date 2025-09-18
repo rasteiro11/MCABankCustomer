@@ -20,6 +20,8 @@ import (
 	"github.com/rasteiro11/PogCore/pkg/database"
 	"github.com/rasteiro11/PogCore/pkg/logger"
 	"github.com/rasteiro11/PogCore/pkg/server"
+	"github.com/rasteiro11/PogCore/pkg/telemetry/opentelemetry"
+	"github.com/rasteiro11/PogCore/pkg/telemetry/tracer"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -29,6 +31,8 @@ import (
 
 func main() {
 	ctx := context.Background()
+	provider := opentelemetry.NewProvider(ctx)
+	tracer.SetGlobal(provider)
 
 	dbInstance, err := database.NewDatabase(database.GetMysqlEngineBuilder)
 	if err != nil {
