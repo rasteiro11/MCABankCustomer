@@ -12,6 +12,10 @@ data:
   SERVER_PORT: ":5002"
   AUTH_GRPC_SERVICE: "mcabank-auth-grpc.default.svc.cluster.local:50051"
   PAYMENT_GRPC_SERVICE: "mcabank-payment-grpc.default.svc.cluster.local:50053"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "jaeger.default.svc.cluster.local:4317"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+  OTEL_EXPORTER_OTLP_INSECURE: "true"
+  OTEL_SERVICE_NAME: "mcabank-customer"
 
 ---
 apiVersion: v1
